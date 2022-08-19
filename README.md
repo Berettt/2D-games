@@ -1,2 +1,2 @@
-# 2D-games
-My original 2D-game projects
+# Hello and welcome
+These are my 2D games, be sure to let me know do you like them

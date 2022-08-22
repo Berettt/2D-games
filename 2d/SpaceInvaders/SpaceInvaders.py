@@ -1,10 +1,12 @@
-import pygame, random, time
+import pygame, random
 
 class SpaceInvader:
 
     def init(self):
 
         pygame.init()
+
+        self.enem = 6
 
         self.pyclock = pygame.time.Clock()
         self.screen = pygame.display.set_mode((850,800))
@@ -19,12 +21,16 @@ class SpaceInvader:
         self.playerRECTANGLE = self.player.get_rect()
 
     def mobs(self):
-        self.mob = pygame.image.load('stuff/ufo.png').convert_alpha()
-        self.mobRECTANGLE = self.mob.get_rect()
-        self.randomx = random.randint(10,840)
-        self.randomxx = random.randint(10,840)
-        self.randomxxx = random.randint(10,840)
-        self.mobRECTANGLE.x = self.randomx
+        self.mob = []
+        self.mobRECTANGLE = []
+        self.randomx = []
+
+        for m in range(self.enem):
+
+            self.mob.append(pygame.image.load('stuff/ufo.png').convert_alpha())
+            self.mobRECTANGLE.append(self.mob[m].get_rect())
+            self.randomx.append(random.randint(10,840))
+            self.mobRECTANGLE[m].x = self.randomx[m]
 
     def main_loop(self):
         self.fire = False
@@ -50,16 +56,16 @@ class SpaceInvader:
                         print('test')
                     
                     if ewent.key == pygame.K_w:
-                        YuniformlyYplayer = -2 
+                        YuniformlyYplayer = -3 
 
                     if ewent.key == pygame.K_s:
-                        YuniformlyYplayer = 2      
+                        YuniformlyYplayer = 3     
 
                     if ewent.key == pygame.K_a:
-                        XuniformlyXplayer = -2 
+                        XuniformlyXplayer = -3
 
                     if ewent.key == pygame.K_d: 
-                        XuniformlyXplayer = 2
+                        XuniformlyXplayer = 3
 
                 if ewent.type == pygame.KEYUP:
                     XuniformlyXplayer = 0
@@ -71,14 +77,15 @@ class SpaceInvader:
 
             self.screen.blit(self.background,(0,0)) #background
             self.screen.blit(self.player,self.playerRECTANGLE) #player
-            self.screen.blit(self.mob,self.mobRECTANGLE) #mob
+            for m in range(self.enem):
+                self.screen.blit(self.mob[m],self.mobRECTANGLE[m])
+                self.mobRECTANGLE[m].y += MOBMOVEMENT
             #self.screen.blit(self.mob,(self.randomxx,self.mobRECTANGLE.y))
             #self.screen.blit(self.mob,(self.randomxxx,self.mobRECTANGLE.y))
             self.screen.blit(self.shot,self.shotRECTANGLE)
 
             self.playerRECTANGLE.x += XuniformlyXplayer #movement x
             self.playerRECTANGLE.y += YuniformlyYplayer #movement y
-            self.mobRECTANGLE.y += MOBMOVEMENT
             self.multiple_bullets()
             self.shotRECTANGLE.y -= self.bulletchange
 
@@ -114,18 +121,16 @@ class SpaceInvader:
 
     def slayed(self):
 
-        def fun(self):
-            self.mobRECTANGLE.x = -9999
-            self.mobRECTANGLE.y = -9999
+        for m in range(self.enem):
 
-        if self.shotRECTANGLE.colliderect(self.mobRECTANGLE):
-            self.mob = pygame.image.load('stuff/boom.png').convert_alpha()
-            self.mobRECTANGLE.x = -9999
-            self.mobRECTANGLE.y = -9999
+            if self.shotRECTANGLE.colliderect(self.mobRECTANGLE[m]):
+                self.mob[m] = pygame.image.load('stuff/boom.png').convert_alpha()
+                self.mobRECTANGLE[m].x = -9999
+                self.mobRECTANGLE[m].y = -9999
 
-        if self.mobRECTANGLE.colliderect(self.playerRECTANGLE):
+            if self.mobRECTANGLE[m].colliderect(self.playerRECTANGLE):
 
-            self.player = pygame.image.load('stuff/explosion.png').convert_alpha()
+                self.player = pygame.image.load('stuff/explosion.png').convert_alpha()
 
 
     def config(self):
@@ -144,3 +149,4 @@ def main():
 if __name__ == '__main__':
     
     main()
+    

@@ -11,15 +11,15 @@ class SpaceInvader:
 
     def main(self):
 
-        self.enem = 2
+        self.enem = 80
         self.score = 0
 
-        self.background = pygame.image.load('stuff/background.jpg').convert_alpha()
+        self.background = pygame.image.load('SpaceInvaders/stuff/background.jpg').convert_alpha()
         self.tescore = pygame.font.Font(None, 50)
         self.tetext = pygame.font.Font(None, 50)
-        self.text = self.tetext.render(str(self.score), False, 'White')
-        self.textscore = self.tescore.render('Score: ', False, 'White')
-        self.player = pygame.image.load('stuff/player.png').convert_alpha()
+        self.text = self.tetext.render(str(self.score), False, 'White').convert_alpha()
+        self.textscore = self.tescore.render('Score: ', False, 'White').convert_alpha()
+        self.player = pygame.image.load('SpaceInvaders/stuff/player.png').convert_alpha()
         self.playerRECTANGLE = self.player.get_rect()
 
     def mobs(self):
@@ -31,12 +31,33 @@ class SpaceInvader:
 
         for m in range(self.enem):
 
-            self.mob.append(pygame.image.load('stuff/ufo.png').convert_alpha())
+            self.mob.append(pygame.image.load('SpaceInvaders/stuff/ufo.png').convert_alpha())
             self.mobRECTANGLE.append(self.mob[m].get_rect())
-            self.randomx.append(random.randint(10,840))
+            self.randomx.append(random.randint(10,785))
             self.mobRECTANGLE[m].x = self.randomx[m]
             self.mobspeed.append(random.randint(2,4))
             self.mobRECTANGLE[m].y = random.randint(-200,-50)
+
+            if m > 10 <20:
+                self.mobRECTANGLE[m].y = -500
+            if m > 20 <30:
+                self.mobRECTANGLE[m].y = -1000
+            if m > 30 <40:
+                self.mobRECTANGLE[m].y = -1500
+            if m > 40 <50:
+                self.mobRECTANGLE[m].y = -2000
+            if m > 50 <60:
+                self.mobRECTANGLE[m].y = -2500
+            if m > 60 <70:
+                self.mobRECTANGLE[m].y = -3000
+            if m > 70 <80:
+                self.mobRECTANGLE[m].y = -3500
+            if m > 80 <90:
+                self.mobRECTANGLE[m].y = -4000
+            if m > 90 <100:
+                self.mobRECTANGLE[m].y = -4500
+            if m > 100 <110:
+                self.mobRECTANGLE[m].y = -5000
 
     def main_loop(self):
 
@@ -79,6 +100,8 @@ class SpaceInvader:
                     XuniformlyXplayer = 0
                     YuniformlyYplayer = 0
 
+            self.player_wall_colision()
+
             self.slayed()
 
             self.fire_bullet()
@@ -87,11 +110,9 @@ class SpaceInvader:
             self.screen.blit(self.textscore,(0,0))
             self.screen.blit(self.text,(110,0))
             self.screen.blit(self.player,self.playerRECTANGLE) #player
-            for m in range(self.enem):
-                self.screen.blit(self.mob[m],self.mobRECTANGLE[m])
-                self.mobRECTANGLE[m].y += self.mobspeed[m]
-            #self.screen.blit(self.mob,(self.randomxx,self.mobRECTANGLE.y))
-            #self.screen.blit(self.mob,(self.randomxxx,self.mobRECTANGLE.y))
+        
+            self.waves(self.enem)
+
             self.screen.blit(self.shot,self.shotRECTANGLE)
             self.playerRECTANGLE.x += XuniformlyXplayer #movement x
             self.playerRECTANGLE.y += YuniformlyYplayer #movement y
@@ -105,7 +126,7 @@ class SpaceInvader:
    
     def bullet(self):
         
-        self.shot = pygame.image.load('stuff/bullet.png')
+        self.shot = pygame.image.load('SpaceInvaders/stuff/bullet.png').convert_alpha()
         self.shotRECTANGLE = self.shot.get_rect()
         self.bulletchange = 0
         self.shotRECTANGLE.x = self.playerRECTANGLE.x
@@ -129,20 +150,116 @@ class SpaceInvader:
             self.shotRECTANGLE.y -= self.bulletchange
             self.fire = False
 
+    def player_wall_colision(self):
+
+        if self.playerRECTANGLE.x <= 10:
+            self.playerRECTANGLE.x = 11
+        if self.playerRECTANGLE.x >= 780:
+            self.playerRECTANGLE.x = 779
+        if self.playerRECTANGLE.y >= 725:
+            self.playerRECTANGLE.y = 724
+        if self.playerRECTANGLE.y <= 150:
+            self.playerRECTANGLE.y = 151
+
     def slayed(self):
 
         for m in range(self.enem):
 
             if self.shotRECTANGLE.colliderect(self.mobRECTANGLE[m]):
-                self.mob[m] = pygame.image.load('stuff/boom.png').convert_alpha()
+                self.mob[m] = pygame.image.load('SpaceInvaders/stuff/skull.png').convert_alpha()
                 self.mobRECTANGLE[m].x = -9999
                 self.mobRECTANGLE[m].y = -9999
+                if self.mobRECTANGLE[m].y > -10:
+                    self.mobRECTANGLE[m].y += random.randint(10,50)
                 self.score += 10
                 self.text = self.tetext.render(str(self.score), False, 'White')
-
+                
             if self.mobRECTANGLE[m].colliderect(self.playerRECTANGLE):
 
-                self.player = pygame.image.load('stuff/explosion.png').convert_alpha()
+                self.player = pygame.image.load('SpaceInvaders/stuff/explosion.png').convert_alpha()
+                exit()
+
+
+    def waves(self, wave:int):
+
+
+        for m in range(wave):
+                if m < 10:
+                    self.screen.blit(self.mob[m],self.mobRECTANGLE[m])
+                    self.mobRECTANGLE[m].y += self.mobspeed[m]
+                    if self.mobRECTANGLE[m].y > 850:
+                        self.mobRECTANGLE[m].y = -300
+                        self.mobRECTANGLE[m].x = random.randint(10,785)
+
+                if m > 10 <20:
+                    self.screen.blit(self.mob[m],self.mobRECTANGLE[m])
+                    self.mobRECTANGLE[m].y += self.mobspeed[m]
+                    if self.mobRECTANGLE[m].y > 850:
+                        self.mobRECTANGLE[m].y = -300
+                        self.mobRECTANGLE[m].x = random.randint(10,785)
+                
+                if m > 20 <30:
+                    self.screen.blit(self.mob[m],self.mobRECTANGLE[m])
+                    self.mobRECTANGLE[m].y += 0.001
+                    if self.mobRECTANGLE[m].y > 850:
+                        self.mobRECTANGLE[m].y = -300
+                        self.mobRECTANGLE[m].x = random.randint(10,785)
+                
+                if m > 30 <40:
+                    self.screen.blit(self.mob[m],self.mobRECTANGLE[m])
+                    self.mobRECTANGLE[m].y += 0.001
+                    if self.mobRECTANGLE[m].y > 850:
+                        self.mobRECTANGLE[m].y = -300
+                        self.mobRECTANGLE[m].x = random.randint(10,785)
+                
+                if m > 40 <50:
+                    self.screen.blit(self.mob[m],self.mobRECTANGLE[m])
+                    self.mobRECTANGLE[m].y += 0.001
+                    if self.mobRECTANGLE[m].y > 850:
+                        self.mobRECTANGLE[m].y = -300
+                        self.mobRECTANGLE[m].x = random.randint(10,785)
+                
+                if m > 50 <60:
+                    self.screen.blit(self.mob[m],self.mobRECTANGLE[m])
+                    self.mobRECTANGLE[m].y += 0.00001
+                    if self.mobRECTANGLE[m].y > 850:
+                        self.mobRECTANGLE[m].y = -300
+                        self.mobRECTANGLE[m].x = random.randint(10,785)
+                
+                if m > 60 <70:
+                    self.screen.blit(self.mob[m],self.mobRECTANGLE[m])
+                    self.mobRECTANGLE[m].y += 0.0001
+                    if self.mobRECTANGLE[m].y > 850:
+                        self.mobRECTANGLE[m].y = -300
+                        self.mobRECTANGLE[m].x = random.randint(10,785)
+                
+                if m > 70 <80:
+                    self.screen.blit(self.mob[m],self.mobRECTANGLE[m])
+                    self.mobRECTANGLE[m].y += 0.001
+                    if self.mobRECTANGLE[m].y > 850:
+                        self.mobRECTANGLE[m].y = -300
+                        self.mobRECTANGLE[m].x = random.randint(10,785)
+                
+                if m > 80 <90:
+                    self.screen.blit(self.mob[m],self.mobRECTANGLE[m])
+                    self.mobRECTANGLE[m].y += 0.000001
+                    if self.mobRECTANGLE[m].y > 850:
+                        self.mobRECTANGLE[m].y = -300
+                        self.mobRECTANGLE[m].x = random.randint(10,785)
+                
+                if m > 90 <100:
+                    self.screen.blit(self.mob[m],self.mobRECTANGLE[m])
+                    self.mobRECTANGLE[m].y += 0.00002
+                    if self.mobRECTANGLE[m].y > 850:
+                        self.mobRECTANGLE[m].y = -300
+                        self.mobRECTANGLE[m].x = random.randint(10,785)
+                
+                if m > 100 <110:
+                    self.screen.blit(self.mob[m],self.mobRECTANGLE[m])
+                    self.mobRECTANGLE[m].y += 0.00003
+                    if self.mobRECTANGLE[m].y > 850:
+                        self.mobRECTANGLE[m].y = -300
+                        self.mobRECTANGLE[m].x = random.randint(10,785)
 
     def config(self):
         pass
